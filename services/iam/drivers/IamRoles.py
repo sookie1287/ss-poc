@@ -14,7 +14,7 @@ class IamRoles(Evaluator):
         self.results['Mocktest'] = [-1, 'GG']
     
     def _checkMocktest2(self):    
-        self.results['KT'] = [-1, 'GG']
+        self.results['Mocktest2'] = [-1, 'GG']
         
 if __name__ == "__main__":
     r = IamRoles()
