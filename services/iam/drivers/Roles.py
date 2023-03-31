@@ -1,7 +1,7 @@
 import sys
 sys.path.append('./../../')
 
-from evaluator import Evaluator
+from Evaluator import Evaluator
 
 class Roles(Evaluator):
     def tt(self):
