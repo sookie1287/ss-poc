@@ -1,8 +1,11 @@
 import sys
-import os
+import os 
+from pathlib import Path
 
-currPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(currPath + '/../../')
+# any cleaner way to import without cluttering sys.path?
+path = (Path(__file__).resolve().parent.parent.parent)
+if path not in sys.path:
+    sys.path.append(str (path)+os.sep)
 
 from Evaluator import Evaluator
 
