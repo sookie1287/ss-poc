@@ -1,3 +1,21 @@
+import os
+import sys
+
+currPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(currPath)
+
+from drivers.IamRoles import IamRoles
+
 class Iam():
-    def tt(self):
-        return 1
+    def __init__(self):
+        self.ok = 1
+        
+    def advise(self):
+        r = IamRoles()
+        r.run()
+    
+        
+if __name__ == "__main__":
+    o = Iam()
+    o.advise()
+    
