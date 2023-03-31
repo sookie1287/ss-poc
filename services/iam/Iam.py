@@ -13,6 +13,7 @@ class Iam():
     def advise(self):
         r = IamRoles()
         r.run()
+        r.showInfo()
     
         
 if __name__ == "__main__":
