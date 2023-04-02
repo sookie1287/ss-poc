@@ -30,3 +30,16 @@ if profile:
 _AWS_OPTIONS = {
     'signature_version': Config.AWS_SDK['signature_version']
 }
+
+Config.init()
+Config.set('_AWS_OPTIONS', _AWS_OPTIONS)
+oo = Config.get('_AWS_OPTIONS')
+
+# print(_cli_options['region'])
+
+'''
+import importlib.util
+ServiceClass = getattr(importlib.import_module('services.iam.Iam'), 'Iam')
+o = ServiceClass()
+o.advise()
+'''

@@ -41,6 +41,11 @@ class Config:
     ]
     
     @staticmethod
+    def init():
+        global cache
+        cache = {}
+    
+    @staticmethod
     def setAccountInfo(__AWS_CONFIG):
         stsInfo = []
         '''
@@ -66,14 +71,20 @@ class Config:
         
         CONFIG.set('stsInfo', stsInfo)
         '''
-        
-    def set(self, key, val):
-        self.key = val
+       
+    @staticmethod 
+    def set(key, val):
+        cache[key] = val
 
-    def get(self, key, defaultValue = False):
+    @staticmethod
+    def get(key, defaultValue = False):
+        ## <TODO>, fix the DEBUG variable
         DEBUG = False
-        if not hasattr(self, key) and defaultValue == False:
+        if key in cache:
+            return cache[key]
+        
+        if defaultValue == False:
             if DEBUG:
                 traceback.print_exc()
         
-        return getattr(self, key, defaultValue)
+        return defaultValue
