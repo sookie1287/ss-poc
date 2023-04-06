@@ -1,6 +1,14 @@
 import traceback
+import os
 
 class Config:
+    DIR_ROOT = os.getcwd()
+    DIR_SERVICE = DIR_ROOT + '/services'
+    DIR_TEMPLATE = DIR_ROOT + '/templates'
+    DIR_HTML = DIR_ROOT + '/adminlte/html'
+    
+    PATH_GENERAL_CONF = DIR_SERVICE + '/general.reporter.json'
+    
     AWS_SDK = {
         'RDSCLIENT_VERS': '2014-10-31',
         'EC2CLIENT_VERS': '2016-11-15',
@@ -39,6 +47,8 @@ class Config:
     GLOBAL_SERVICES = [
         'iam'
     ]
+    
+    CURRENT_REGION = 'us-east-1'
     
     @staticmethod
     def init():
@@ -88,3 +98,8 @@ class Config:
                 traceback.print_exc()
         
         return defaultValue
+
+dashboard = {}
+
+if __name__ == "__main__":
+    print(os.getcwd())

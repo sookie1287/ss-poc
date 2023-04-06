@@ -37,9 +37,8 @@ oo = Config.get('_AWS_OPTIONS')
 
 # print(_cli_options['region'])
 
-'''
+
 import importlib.util
 ServiceClass = getattr(importlib.import_module('services.iam.Iam'), 'Iam')
-o = ServiceClass()
+o = ServiceClass(_cli_options['region'])
 o.advise()
-'''
