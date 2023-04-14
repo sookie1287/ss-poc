@@ -100,6 +100,7 @@ class Config:
         return defaultValue
 
 dashboard = {}
+Config.init()
 
 if __name__ == "__main__":
     print(os.getcwd())

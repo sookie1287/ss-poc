@@ -2,7 +2,7 @@ import boto3
 import re
 
 from pprint import pprint
-from Config import Config
+from .Config import Config
 
 def _pr(s):
     pprint(s)
