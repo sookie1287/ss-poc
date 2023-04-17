@@ -1,7 +1,10 @@
 import os
 import boto3
+
 from botocore.config import Config
-from service.Service import Service
+from services.Service import Service
+from utils.Config import Config as Config_int
+
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/efs.html
 class Efs(Service):
@@ -9,10 +12,11 @@ class Efs(Service):
         super().__init__(region)
 
         self.region = region
-        self.__AWS_OPTIONS = self._Service__AWS_OPTIONS
+        self.__AWS_OPTIONS = self._AWS_OPTIONS
         self.__AWS_OPTIONS['region_name'] = region
 
-        config = Config(**self.__AWS_OPTIONS)
+        config = Config(region_name=region)
+        my_config = Config()
         self.efs_client = boto3.client('efs', config=config)
 
         self.__load_drivers()
@@ -35,8 +39,7 @@ class Efs(Service):
         objs = {}
 
         efs_list = self.get_resources()
-
-        driver = 'efs_efs'
+        driver = 'EfsDriver'
         if globals().get(driver):
             for efs in efs_list:
                 print('... (EFS) inspecting ' + efs['FileSystemId'])
@@ -57,3 +60,9 @@ class Efs(Service):
 
             with open(os.path.join(path, file), 'r') as f:
                 exec(f.read(), globals())
+
+if __name__ == "__main__":
+    Config_int.init()
+    o = Efs('ap-southeast-1')
+    out = o.advise()
+    print(out)
