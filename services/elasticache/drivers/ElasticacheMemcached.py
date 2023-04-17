@@ -1,4 +1,5 @@
 from .ElasticacheCommon import ElasticacheCommon
+from packaging.version import Version
 
 
 class ElasticacheMemcached(ElasticacheCommon):
@@ -15,4 +16,6 @@ class ElasticacheMemcached(ElasticacheCommon):
                                            f"{self.cluster.get('ARN')}: Using default Memcached port 11211"]
 
     def _checkEngineVersion(self):
-        pass
+        if Version(self.cluster.get('EngineVersion')) not in self.latest_3versions.get('memcached'):
+            self.results['EngineVersion'] = [-1,
+                                             f"{self.cluster.get('ARN')}: Not using 3 latest versions"]

@@ -1,5 +1,6 @@
 import boto3
 import botocore
+from packaging.version import Version
 
 from utils.Config import Config
 from utils.Tools import _pr
@@ -13,6 +14,7 @@ class Elasticache(Service):
         super().__init__(region)
         self.elasticacheClient = boto3.client(
             'elasticache')
+        self.latest_3versions = self.getTopEngineVersions(3)
 
     def getECClusterInfo(self):
         # list all Elasticahe clusters
@@ -25,12 +27,30 @@ class Elasticache(Service):
                 resp = self.elasticacheClient.describe_cache_clusters(
                     ShowCacheNodeInfo=True, Marker=resp.get('Marker'))
                 arr = arr.append(resp.get('CacheClusters'))
-            return arr
-
         except botocore.exceptions.ClientError as e:
             # print out error to console for now
             print(e)
-            return arr
+
+        return arr
+
+    def getTopEngineVersions(self, n: int):
+        lookup = {}
+
+        def get_version(engine):
+            ret = self.elasticacheClient.describe_cache_engine_versions(
+                Engine=engine)
+            engine_versions = [engine_version.get(
+                'EngineVersion') for engine_version in ret.get('CacheEngineVersions')]
+            return sorted([Version(v) for v in engine_versions], reverse=True)[:n]
+
+        try:
+            for i in ['memcached', 'redis']:
+                lookup[i] = get_version(i)
+        except botocore.exceptions.ClientError as e:
+            # print out error to console for now
+            print(e)
+
+        return lookup
 
     def advise(self):
         objs = {}
@@ -49,10 +69,12 @@ class Elasticache(Service):
 
             if obj is not None:
                 obj.run()
-                objs['placeholder'] = obj.getInfo()
+                objs[f'MemcachedCluster:{cluster.get("CacheClusterId")}'] = obj.getInfo(
+                )
                 del obj
             else:
-                print(f"Engine {cluster.get('Engine')} not recognised")
+                print(
+                    f"Engine {cluster.get('Engine')} of Memcached Cluster {cluster.get('CacheClusterId')} is not recognised")
 
         return objs
     pass
