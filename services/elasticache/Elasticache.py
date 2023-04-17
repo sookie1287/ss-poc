@@ -20,13 +20,20 @@ class Elasticache(Service):
         # list all Elasticahe clusters
         arr = []
         try:
-            resp = self.elasticacheClient.describe_cache_clusters(
-                ShowCacheNodeInfo=True)
-            arr = resp.get('CacheClusters')
-            while resp.get('Marker') is not None:
-                resp = self.elasticacheClient.describe_cache_clusters(
-                    ShowCacheNodeInfo=True, Marker=resp.get('Marker'))
-                arr = arr.append(resp.get('CacheClusters'))
+            while True:
+                if len(arr) == 0:
+                    # init
+                    resp = self.elasticacheClient.describe_cache_clusters(
+                        ShowCacheNodeInfo=True)
+                else:
+                    # subsequent
+                    resp = self.elasticacheClient.describe_cache_clusters(
+                        ShowCacheNodeInfo=True, Marker=resp.get('Marker'))
+
+                arr = resp.get('CacheClusters')
+
+                if resp.get('Marker') is None:
+                    break
         except botocore.exceptions.ClientError as e:
             # print out error to console for now
             print(e)
@@ -57,8 +64,10 @@ class Elasticache(Service):
 
         while True:
             if len(offering) == 0:
+                # init
                 resp = self.elasticacheClient.describe_reserved_cache_nodes_offerings()
             else:
+                # subsequent
                 resp = self.elasticacheClient.describe_reserved_cache_nodes_offerings(
                     Marker=resp.get('Marker'))
 
@@ -110,6 +119,6 @@ class Elasticache(Service):
 if __name__ == "__main__":
     Config.init()
     o = Elasticache('us-east-1')
-    _pr(o.getAllInstanceOfferings())
-    # out = o.advise()
-    # _pr(out)
+    # _pr(o.getAllInstanceOfferings())
+    out = o.advise()
+    _pr(out)
