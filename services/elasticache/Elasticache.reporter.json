@@ -39,7 +39,8 @@
         "additionalCost": 0,
         "needFullTest": 0,
         "ref": [
-            "[Latest supported nodes]<https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html>"
+            "[Latest redis supported nodes]<https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html>",
+            "[Latest memcached supported nodes]<https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/CacheNodes.SupportedTypes.html>"
         ]
     },
     "RinstanceType": {
