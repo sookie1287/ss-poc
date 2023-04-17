@@ -1,5 +1,5 @@
 from .ElasticacheCommon import ElasticacheCommon
-from utils.Tools import _pr
+from packaging.version import Version
 
 
 class ElasticacheRedis(ElasticacheCommon):
@@ -14,3 +14,8 @@ class ElasticacheRedis(ElasticacheCommon):
         if any(port == 6379 for port in ports_in_cluster):
             self.results['DefaultPort'] = [-1,
                                            f"{self.cluster.get('ARN')}: Using default Redis port 6379"]
+
+    def _checkEngineVersion(self):
+        if Version(self.cluster.get('EngineVersion')) not in self.latest_3versions.get('redis'):
+            self.results['EngineVersion'] = [-1,
+                                             f"{self.cluster.get('ARN')}: Not using 3 latest versions"]
