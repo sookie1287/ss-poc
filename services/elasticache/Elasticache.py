@@ -33,7 +33,7 @@ class Elasticache(Service):
 
         return arr
 
-    def getTopEngineVersions(self, n: int):
+    def getTopEngineVersions(self, n: int) -> dict[list]:
         lookup = {}
 
         def get_version(engine):
@@ -51,6 +51,32 @@ class Elasticache(Service):
             print(e)
 
         return lookup
+
+    def getAllInstanceOfferings(self) -> dict[list]:
+        offering = {}
+
+        while True:
+            if len(offering) == 0:
+                resp = self.elasticacheClient.describe_reserved_cache_nodes_offerings()
+            else:
+                resp = self.elasticacheClient.describe_reserved_cache_nodes_offerings(
+                    Marker=resp.get('Marker'))
+
+            for i in resp.get('ReservedCacheNodesOfferings'):
+                if i.get('ProductDescription') not in offering.keys():
+                    offering[i.get('ProductDescription')] = set(
+                        [i.get('CacheNodeType')])
+                else:
+                    offering[i.get('ProductDescription')].add(
+                        i.get('CacheNodeType'))
+
+            if resp.get('Marker') is None:
+                break
+
+        return offering
+
+    def getLatestInstanceTypes(self):
+        pass
 
     def advise(self):
         objs = {}
@@ -84,5 +110,6 @@ class Elasticache(Service):
 if __name__ == "__main__":
     Config.init()
     o = Elasticache('us-east-1')
-    out = o.advise()
-    _pr(out)
+    _pr(o.getAllInstanceOfferings())
+    # out = o.advise()
+    # _pr(out)
