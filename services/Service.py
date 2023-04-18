@@ -1,3 +1,5 @@
+import time
+
 from utils.Config import Config
 
 class Service:
@@ -10,8 +12,9 @@ class Service:
     VALUES_SEPARATOR = ','
 
     def __init__(self, region):
-        global _Config
+        # global _Config
         # global PHPSDK_CRED_PROVIDER, PHPSDK_CRED_PROFILE
+        self.overallTimeStart = time.time()
 
         classname = self.__class__.__name__
 
@@ -20,12 +23,14 @@ class Service:
 
         self.RULESPREFIX = classname + '::rules'
         self._AWS_OPTIONS = Config.get("_AWS_OPTIONS", {'PlaceHolder': 'ok'})
+        self.region = region
         self._AWS_OPTIONS['region'] = region
         
         # if PHPSDK_CRED_PROVIDER is not None:
         #    self.__AWS_OPTIONS['credentials'] = PHPSDK_CRED_PROVIDER
         # elif PHPSDK_CRED_PROFILE is not None:
         #    self.__AWS_OPTIONS['profile'] = PHPSDK_CRED_PROFILE
+        print('PREPARING -- ' + classname.upper()+ '::'+region)
         
     def setRules(self, rules):
         rules = rules.lower().split('^')
@@ -47,6 +52,8 @@ class Service:
         self.tags = result
         
     def __del__(self):
+        timespent = round(time.time() - self.overallTimeStart, 3)
+        print('\033[1;42mCOMPLETED\033[0m -- ' + self.__class__.__name__.upper() + '::'+self.region+' (' + str(timespent) + 's)')
         Config.set(self.RULESPREFIX, [])
         
     def resourceHasTags(self, tags):

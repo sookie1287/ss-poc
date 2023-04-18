@@ -126,6 +126,9 @@ os.system('rm -f output.zip')
 
 ## Generate output
 uploadToS3 = False
+
+## <TODO>
+## Might be able breakdown the function further to leverage on multi-processing
 Screener.generateScreenerOutput(runmode, contexts, hasGlobal, serviceStat, regions, uploadToS3, bucket)
 
 os.chdir(_C.FORK_DIR)
