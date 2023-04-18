@@ -312,9 +312,9 @@
     },
     "DefaultParameterGroup": {
         "category": "O",
-        "^description": "Using default port enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
-        "shortDesc": "Change to non-default port",
-        "criticality": "L",
+        "^description": "lorem ipsum",
+        "shortDesc": "Customise Parameter Group",
+        "criticality": "I",
         "downtime": 0,
         "slowness": 0,
         "additionalCost": 0,
