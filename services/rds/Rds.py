@@ -10,6 +10,7 @@ from services.rds.drivers.RdsMysql import RdsMysql
 from services.rds.drivers.RdsMysqlAurora import RdsMysqlAurora
 from services.rds.drivers.RdsPostgres import RdsPostgres
 from services.rds.drivers.RdsPostgresAurora import RdsPostgresAurora
+from services.rds.drivers.RdsMssql import RdsMssql
 
 class Rds(Service):
     def __init__(self, region):
@@ -20,7 +21,8 @@ class Rds(Service):
         'mysql': 'Mysql',
         'aurora-mysql': 'MysqlAurora',
         'postgres': 'Postgres',
-        'aurora-postgresql': 'PostgresAurora'
+        'aurora-postgresql': 'PostgresAurora',
+        'sqlserver': 'Mssql'
     }
     
     def getResources(self):
@@ -51,11 +53,15 @@ class Rds(Service):
             print('... (RDS) inspecting ' + instance['DBInstanceIdentifier'])
             
             engine = instance['Engine']
+            
+            # grouping mssql versions together
+            if engine.find('sqlserver') != -1:
+                engine = 'sqlserver'
+                
             if engine not in self.engineDriver:
                 continue
             
             engine = self.engineDriver[engine]
-                        
             driver = 'Rds' + engine
             if driver in globals():
                 obj = globals()[driver](instance, self.rdsClient)
@@ -70,4 +76,3 @@ if __name__ == "__main__":
     Config.init()
     o = Rds('ap-southeast-1')
     out = o.advise()
-    _pr(out)
