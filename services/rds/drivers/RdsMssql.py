@@ -15,5 +15,5 @@ class RdsMssql(RdsCommon):
         
         if engine in flaggedEngines:
             # print("instance flagged: multiAZ not supported")
-            self.results['MSSQL__EngineHasMultiAZSupport'] = [1,engine]
+            self.results['MSSQL__EngineHasMultiAZSupport'] = [-1,engine]
 
