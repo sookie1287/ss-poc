@@ -78,17 +78,17 @@ class RdsCommon(Evaluator):
         if backupDay < 7:
             self.results['Backup'] = [-1, backupDay]
 
-    def __checkIsUsingDefaultParameterGroups(self):
+    def _checkIsUsingDefaultParameterGroups(self):
         params = self.db['DBParameterGroups']
         for param in params:
             if 'default.' in param['DBParameterGroupName']:
                 self.results['DefaultParams'] = [-1, param['DBParameterGroupName']]
 
-    def __checkHasEnhancedMonitoring(self):
+    def _checkHasEnhancedMonitoring(self):
         flag = 1 if 'EnhancedMonitoringResourceArn' in self.db else -1
         self.results['EnhancedMonitor'] = [flag, 'On' if flag == -1 else 'Off']
 
-    def __checkDeleteProtection(self):
+    def _checkDeleteProtection(self):
         flag = -1 if self.db['DeletionProtection'] == False else 1
         self.results['DeleteProtection'] = [flag, 'Off' if flag == -1 else 'On']
 
@@ -96,7 +96,7 @@ class RdsCommon(Evaluator):
         flag = -1 if self.db['PubliclyAccessible'] == True else 1
         self.results['PubliclyAccessible'] = [flag, 'Off' if flag == -1 else 'On']
 
-    def __checkSubnet3Az(self):
+    def _checkSubnet3Az(self):
         subnets = self.db['DBSubnetGroup']['Subnets']
         
         subnetName = []
@@ -109,7 +109,7 @@ class RdsCommon(Evaluator):
             
         self.results['Subnets3Az'] = [flag, ', '.join(subnetName)]
         
-    def __checkIsInstanceLatestGeneration(self):
+    def _checkIsInstanceLatestGeneration(self):
         key = self.__configPrefix + 'orderableInstanceType'
         instTypes = Config.get(key, [])
         
@@ -166,12 +166,13 @@ class RdsCommon(Evaluator):
             self.results['LatestInstanceGenceration'] = [-1, self.db['DBInstanceClass']]
     
     
-    def __checkHasPatches(self):
+    def _checkHasPatches(self):
         engine = self.db['Engine']
         engineVersion = self.db['EngineVersion']
         
         key = self.__configPrefix + 'engineVersions'
-        versions = Config.get(key, [])
+        version = Config.get(key, [])
+        details = {}
         
         if not details:
             versions = self.rdsClient.describe_db_engine_versions(
@@ -188,7 +189,7 @@ class RdsCommon(Evaluator):
         
         upgrades = details['ValidUpgradeTarget']
         if not upgrades:
-            self.results['EngineVersion'] = 1
+            self.results['EngineVersion'] = [1, engineVersion]
             return
         
         if upgrades[0]['IsMajorVersionUpgrade'] == False:
@@ -198,7 +199,7 @@ class RdsCommon(Evaluator):
         if lastInfo['IsMajorVersionUpgrade'] == True:
             self.results['EngineVersionMajor'] = [-1, engineVersion]
        
-def __checkClusterSize(self):
+def _checkClusterSize(self):
     cluster = self.db.get('DBClusterIdentifier', None)
     if not cluster:
         return
@@ -211,7 +212,7 @@ def __checkClusterSize(self):
     if len(clusters) < 2 or len(clusters) > 7:
         self.results['Aurora__ClusterSize'] = [-1, len(clusters)]
         
-def __checkOldSnapshots(self):
+def _checkOldSnapshots(self):
     if self.db.get('DBClusterIdentifier'):
         identifier = self.db['DBClusterIdentifier']
         result = self.rdsClient.describe_db_cluster_snapshots(
