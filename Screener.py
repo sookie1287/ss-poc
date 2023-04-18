@@ -88,7 +88,7 @@ class Screener:
             with open(_C.API_JSON, 'w') as f:
                 json.dump(contexts, f)
         else:
-            apiResultArray = []
+            apiResultArray = {}
             if hasGlobal:
                 regions.append('GLOBAL')
             
@@ -126,6 +126,9 @@ class Screener:
                     # if service not in ['guardduty']:
                     #    excelObj.generateWorkSheet(service, reporter.cardSummary)
                 else:
+                    if not service in apiResultArray:
+                        apiResultArray[service] = {'summary': {}, 'detail': {}}
+                    
                     apiResultArray[service]['summary'] = reporter.getCard()
                     apiResultArray[service]['detail'] = reporter.getDetail()
             
