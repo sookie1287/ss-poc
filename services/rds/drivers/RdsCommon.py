@@ -92,7 +92,7 @@ class RdsCommon(Evaluator):
         flag = -1 if self.db['DeletionProtection'] == False else 1
         self.results['DeleteProtection'] = [flag, 'Off' if flag == -1 else 'On']
 
-    def __checkIsPublicAccessible(self):
+    def _checkIsPublicAccessible(self):
         flag = -1 if self.db['PubliclyAccessible'] == True else 1
         self.results['PubliclyAccessible'] = [flag, 'Off' if flag == -1 else 'On']
 
@@ -163,7 +163,7 @@ class RdsCommon(Evaluator):
             self.results['BurstableInstance'] = [-1, self.db['DBInstanceClass']]   
         
         if compressedLists[dbInstFamily] > dbInstGeneration:
-            self.results['LatestInstanceGenceration'] = [-1, self.db['DBInstanceClass']]
+            self.results['LatestInstanceGeneration'] = [-1, self.db['DBInstanceClass']]
     
     
     def _checkHasPatches(self):
