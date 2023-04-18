@@ -13,9 +13,9 @@ class ElasticacheMemcached(ElasticacheCommon):
         # self.cluster.get('CacheNodes')[0].get('Endpoint').get('Port')
         if self.cluster.get('ConfigurationEndpoint').get('Port') == 11211:
             self.results['DefaultPort'] = [-1,
-                                           f"{self.cluster.get('ARN')}: Using default Memcached port 11211"]
+                                           f"Using default Memcached port 11211"]
 
     def _checkEngineVersion(self):
         if Version(self.cluster.get('EngineVersion')) not in self.latest_3versions.get('memcached'):
             self.results['EngineVersion'] = [-1,
-                                             f"{self.cluster.get('ARN')}: Not using 3 latest versions"]
+                                             f"Not using 3 latest versions"]

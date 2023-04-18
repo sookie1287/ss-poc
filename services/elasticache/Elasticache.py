@@ -104,12 +104,12 @@ class Elasticache(Service):
 
             if obj is not None:
                 obj.run()
-                objs[f'MemcachedCluster:{cluster.get("CacheClusterId")}'] = obj.getInfo(
+                objs[f"{cluster.get('ARN')}"] = obj.getInfo(
                 )
                 del obj
             else:
                 print(
-                    f"Engine {cluster.get('Engine')} of Memcached Cluster {cluster.get('CacheClusterId')} is not recognised")
+                    f"Engine {cluster.get('Engine')} of Cluster {cluster.get('CacheClusterId')} is not recognised")
 
         return objs
     pass

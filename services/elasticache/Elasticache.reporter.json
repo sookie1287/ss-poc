@@ -4,10 +4,10 @@
         "^description": "You have {$COUNT} instances/clusters are using default port, which enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
         "shortDesc": "Change to non-default port",
         "criticality": "L",
-        "downtime": 0,
+        "downtime": 1,
         "slowness": 0,
         "additionalCost": 0,
-        "needFullTest": 0,
+        "needFullTest": 1,
         "ref": [
             "[New Memcached]<https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/GettingStarted.CreateCluster.html>",
             "[New Redis]<https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/GettingStarted.CreateCluster.html>",
