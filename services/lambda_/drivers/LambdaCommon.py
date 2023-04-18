@@ -70,7 +70,7 @@ class LambdaCommon(Evaluator):
             for result in results['Datapoints']:
                 return result['SampleCount']
 
-
+    
     def _check_function_url_in_used(self):
         url_config = self.lambda_client.list_function_url_configs(
             FunctionName=self.function_name
@@ -170,8 +170,12 @@ class LambdaCommon(Evaluator):
             print("Skipped runtime version check due to unable to locate runtime option path")
             return
 
-        with open(self.RUNTIME_PATH, 'r') as f:
-            arr = json.load(f)
+        arr = Config.get('lambdaRunTimeList', False)
+        if arr == False:
+            with open(self.RUNTIME_PATH, 'r') as f:
+                arr = json.load(f)
+                
+            Config.set('lambdaRunTimeList', arr)
 
         runtime = self.lambda_['Runtime']
 
@@ -196,6 +200,10 @@ class LambdaCommon(Evaluator):
                 for item in replace_arr:
                     runtime_version = runtime_version.replace(item, '')
                 break
+
+        # skip java check
+        if runtime_prefix == 'java':
+            return
 
         for option in arr['shapes']['Runtime']['enum']:
             if not option.startswith(runtime_prefix):

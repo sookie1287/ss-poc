@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/home/ec2-user/environment/ss-poc/src/services/Evaluator.py", line 26, in run
-    getattr(self, method)()
-  File "/home/ec2-user/environment/ss-poc/src/services/lambda_/drivers/LambdaCommon.py", line 209, in _check_runtime
-    if float(option_version) > float(runtime_version):
-ValueError: could not convert string to float: '8.al2'

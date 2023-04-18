@@ -35,6 +35,9 @@ class Reporter:
             if 'SERV' not in dashboard:
                 dashboard['SERV'] = {self.service: {region: {}}}
                 
+            if self.service not in dashboard['SERV']:
+                dashboard['SERV'][self.service] = {region: {}}
+                
             dashboard['SERV'][self.service][region] = {'Total': len(objs), 'H': 0}
         return self
         
