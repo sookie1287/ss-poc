@@ -6,6 +6,10 @@ from utils.Tools import _pr
 from services.Service import Service
 ##import drivers here
 from services.rds.drivers.RdsCommon import RdsCommon
+from services.rds.drivers.RdsMysql import RdsMysql
+# from services.rds.drivers.RdsMysqlAurora import RdsMysqlAurora
+# from services.rds.drivers.RdsPostgres import RdsPostgres
+# from services.rds.drivers.RdsPostgresAurora import RdsPostgresAurora
 
 class Rds(Service):
     def __init__(self, region):
@@ -13,10 +17,10 @@ class Rds(Service):
         self.rdsClient = boto3.client('rds')
 
     engineDriver = {
-        'mysql': 'mysql',
-        'aurora-mysql': 'mysql_aurora',
-        'postgres': 'postgres',
-        'aurora-postgresql': 'postgres_aurora'
+        'mysql': 'Mysql',
+        'aurora-mysql': 'MysqlAurora',
+        'postgres': 'Postgres',
+        'aurora-postgresql': 'PostgresAurora'
     }
     
     def getResources(self):
@@ -40,7 +44,7 @@ class Rds(Service):
         return finalArr    
     
     def advise(self):
-        objs = []
+        objs = {}
         instances = self.getResources()
         
         for instance in instances:
@@ -52,9 +56,9 @@ class Rds(Service):
             
             engine = self.engineDriver[engine]
                         
-            driver = 'rds_' + engine
-            print(globals())
+            driver = 'Rds' + engine
             if driver in globals():
+                print("driver exists in globals:"+driver)
                 obj = globals()[driver](instance, self.rdsClient)
                 obj.run()
                 
