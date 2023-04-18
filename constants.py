@@ -6,7 +6,7 @@ SERVICE_DIR = ROOT_DIR + '/services'
 TEMPLATE_DIR = ROOT_DIR + '/templates'
 VENDOR_DIR = ROOT_DIR + '/vendor'
 
-HTML_FOLDER = 'adminlte/html'
+HTML_FOLDER =  '/adminlte/html'
 HTML_DIR = ROOT_DIR + '/' + HTML_FOLDER
 FORK_DIR = ROOT_DIR + '/__fork'
 API_JSON = FORK_DIR + '/api.json'
