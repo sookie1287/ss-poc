@@ -58,7 +58,6 @@ class Rds(Service):
                         
             driver = 'Rds' + engine
             if driver in globals():
-                print("driver exists in globals:"+driver)
                 obj = globals()[driver](instance, self.rdsClient)
                 obj.run()
                 
