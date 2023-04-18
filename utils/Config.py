@@ -52,6 +52,10 @@ class Config:
         'iam'
     ]
     
+    KEYWORD_SERVICES = [
+        'lambda'    
+    ]
+    
     CURRENT_REGION = 'us-east-1'
     
     @staticmethod

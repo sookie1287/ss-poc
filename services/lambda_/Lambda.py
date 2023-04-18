@@ -2,15 +2,18 @@ import boto3
 from botocore.exceptions import ClientError
 import os
 import importlib
+
+from services.lambda_.drivers.LambdaCommon import LambdaCommon
+from services.Service import Service
 from utils.Config import Config
 
-class LambdaService:
+class Lambda(Service):
     def __init__(self, region):
+        super().__init__(region)
         self.region = region
         self.lambda_client = boto3.client("lambda", region_name=region)
         self.iam_client = boto3.client("iam", region_name=region)
         self.tags = []
-        self.load_drivers()
 
     def get_resources(self):
         functions = []
@@ -73,29 +76,21 @@ class LambdaService:
             driver = "lambda_common"
 
             try:
-                module = importlib.import_module(f"drivers.{driver}")
-                cls = getattr(module, driver)
+                # module = importlib.import_module(f"drivers.{driver}")
+                # cls = getattr(module, driver)
                 print(f"... (Lambda) inspecting {lambda_function['FunctionName']}")
-                obj = cls(lambda_function, self.lambda_client, self.iam_client, role_count)
+                # obj = cls(lambda_function, self.lambda_client, self.iam_client, role_count)
+                obj = LambdaCommon(lambda_function, self.lambda_client, self.iam_client, role_count)
                 obj.run()
-                objs[f"Lambda::{lambda_function['FunctionName']}"] = obj.get_info()
+                objs[f"Lambda::{lambda_function['FunctionName']}"] = obj.getInfo()
             except (ImportError, AttributeError):
                 print(f"Failed to load driver {driver}")
 
         return objs
-
-    def load_drivers(self):
-        drivers_path = "drivers"
-        for file in os.listdir(drivers_path):
-            if file.startswith(".") or not file.endswith(".py"):
-                continue
-
-            module_name = file[:-3]
-            importlib.import_module(f"{drivers_path}.{module_name}")
             
             
 if __name__ == "__main__":
     Config.init()
-    o = LambdaService('ap-southeast-1')
+    o = Lambda('ap-southeast-1')
     out = o.get_resources()
     print(out)

@@ -12,7 +12,13 @@ class Reporter:
         self.detail = {}
         self.config = {}
         self.service = service
-        serviceReporterJsonPath = _C.SERVICE_DIR + '/' + service + '/' + service + '.reporter.json'
+        
+        folder = service
+        if service in Config.KEYWORD_SERVICES:
+            folder = service + '_'
+        
+        serviceReporterJsonPath = _C.SERVICE_DIR + '/' + folder + '/' + service + '.reporter.json'
+        
         if not os.path.exists(serviceReporterJsonPath):
             print("[Fatal] " + serviceReporterJsonPath + " not found")
         self.config = json.loads(open(serviceReporterJsonPath).read())
@@ -165,9 +171,7 @@ class Reporter:
             if desc:
                 COUNT = len(items)
                 COUNT = "<strong><u>{}</u></strong>".format(COUNT)
-                
                 self.cardSummary[check]['^description'] = desc.replace('{$COUNT}', COUNT)
-                print(self.cardSummary[check]['^description'])
             
             # Process category
             category = self._getConfigValue(check, 'category')

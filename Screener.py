@@ -69,8 +69,13 @@ class Screener:
     def getServiceModuleDynamically(service):
         # .title() captilise the first character
         # e.g: services.iam.Iam
+        
+        folder = service
+        if service in Config.KEYWORD_SERVICES:
+            folder = service + '_'
+        
         className = service.title()
-        module = 'services.' + service + '.' + className
+        module = 'services.' + folder + '.' + className
         
         ServiceClass = getattr(importlib.import_module(module), className)
         return ServiceClass
@@ -134,7 +139,7 @@ class Screener:
                 # excelObj.buildSummaryPage(summary)
                 # excelObj.__save(HTML_DIR + '/')
                 os.chdir(_C.ROOT_DIR)
-                os.system('cd adminlte; zip -r output.zip html; mv output.zip ../output.zip')
+                os.system('cd adminlte; zip -q -r output.zip html; mv output.zip ../output.zip')
                 print("Pages generated, download \033[1;42moutput.zip\033[0m to view")
                 print("CloudShell user, you may use this path: \033[1;42m~/service-screener/output.zip\033[0m")
                 
