@@ -6,7 +6,7 @@ class RdsPostgres(RdsCommon):
         super().__init__(db, rdsClient)
         self.loadParameterInfo()
 
-    def __checkPostgresParam(self):
+    def _checkPostgresParam(self):
         params = self.dbParams
 
         idleTimeout = params.get('idle_in_transaction_session_timeout', False)

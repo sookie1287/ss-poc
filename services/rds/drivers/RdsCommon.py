@@ -11,7 +11,7 @@ from services.Evaluator import Evaluator
 
 class RdsCommon(Evaluator):
     def __init__(self, db, rdsClient):
-        self.dbParams = []
+        self.dbParams = {}
         self.results = {}
         self.db = db
         self.rdsClient = rdsClient
@@ -52,23 +52,23 @@ class RdsCommon(Evaluator):
     ##Common Logic Belows
     ##All checks start from __check;
     
-    def __checkHasMultiAZ(self):
+    def _checkHasMultiAZ(self):
         multiAZ = -1 if self.db['MultiAZ'] == False else 1
         self.results['MultiAZ'] = [multiAZ, 'Off' if multiAZ == -1 else 'On']
     
-    def __checkAutoMinorVersionUpgrade(self):
+    def _checkAutoMinorVersionUpgrade(self):
         flag = -1 if self.db['AutoMinorVersionUpgrade'] == False else 1
         self.results['AutoMinorVersionUpgrade'] = [flag, 'Off' if flag == -1 else 'On']
     
-    def __checkHasStorageEncrypted(self):
+    def _checkHasStorageEncrypted(self):
         flag = -1 if self.db['StorageEncrypted'] == False else 1
         self.results['StorageEncrypted'] = [flag, 'Off' if flag == -1 else 'On']
     
-    def __checkHasPerformanceInsightsEnabled(self):
+    def _checkHasPerformanceInsightsEnabled(self):
         flag = -1 if self.db['PerformanceInsightsEnabled'] == False else 1
         self.results['PerformanceInsightsEnabled'] = [flag, 'Off' if flag == -1 else 'On']
         
-    def __checkHasBackup(self):
+    def _checkHasBackup(self):
         backupDay = self.db['BackupRetentionPeriod']
         if backupDay == 0:
             self.results['Backup'] = -1
