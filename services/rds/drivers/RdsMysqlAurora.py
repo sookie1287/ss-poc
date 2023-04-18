@@ -1,7 +1,7 @@
 
-from .RdsPostgres import RdsPostgres
+from .RdsMysql import RdsMysql
 
-class RdsPostgresAurora(RdsPostgres):
+class RdsMysqlAurora(RdsMysql):
     def __init__(self, db, rdsClient):
         super().__init__(db, rdsClient)
         self.loadParameterInfo()

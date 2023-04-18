@@ -7,9 +7,9 @@ from services.Service import Service
 ##import drivers here
 from services.rds.drivers.RdsCommon import RdsCommon
 from services.rds.drivers.RdsMysql import RdsMysql
-# from services.rds.drivers.RdsMysqlAurora import RdsMysqlAurora
-# from services.rds.drivers.RdsPostgres import RdsPostgres
-# from services.rds.drivers.RdsPostgresAurora import RdsPostgresAurora
+from services.rds.drivers.RdsMysqlAurora import RdsMysqlAurora
+from services.rds.drivers.RdsPostgres import RdsPostgres
+from services.rds.drivers.RdsPostgresAurora import RdsPostgresAurora
 
 class Rds(Service):
     def __init__(self, region):
