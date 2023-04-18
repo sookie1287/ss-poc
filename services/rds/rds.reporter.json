@@ -379,5 +379,18 @@
       "[Add Clusters]<https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-replicas-adding.html>",
       "[Delete Clusters]<https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DeleteCluster.html>"
     ]
+  },
+  "MSSQL__EngineHasMultiAZSupport":{
+    "category": "RO",
+    "^description": "[MSSQL High Availability] You have {$COUNT} instance(s) which are using SQL Server Express Edition or SQL Server Web Edition. These editions of SQL Server don't offer Multi-AZ support. For production workloads you should consider using SQL Server Enterprise Edition or SQL Server Standard Edition with multi-AZ support.",
+    "downtime": 1,
+    "slowness": 0,
+    "additionalCost": 1,
+    "needFullTest": 0,
+    "criticality": "M",
+    "shortDesc": "Use SQL Server Standard / Enterprise Edition",
+    "ref": [
+      "[High Availability for MSSQL]<https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-sql-server/rds-sql.html>"
+    ]
   }
 }
