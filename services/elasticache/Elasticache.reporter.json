@@ -17,9 +17,23 @@
     },
     "EngineVersion": {
         "category": "SP",
-        "^description": "There are {$COUNT} instances/clusters are not running on the latest engine. Refers to the individual engine changelog in the references.",
+        "^description": "There are {$COUNT} instances/clusters are not running on the latest engine. Refer to the individual engine changelog in the references.",
         "shortDesc": "Upgrade to latest engine version",
         "criticality": "M",
+        "downtime": 1,
+        "slowness": 0,
+        "additionalCost": 0,
+        "needFullTest": 1,
+        "ref": [
+            "[Redis Changelogs]<https://docs.redis.com/latest/rs/release-notes/>",
+            "[Memcached ReleaseNotes]<https://github.com/memcached/memcached/wiki/ReleaseNotes>"
+        ]
+    },
+    "EngineVersionUnlisted": {
+        "category": "SP",
+        "^description": "There are {$COUNT} instances/clusters running on an unlisted engine version. Refer to the individual engine changelog in the references.",
+        "shortDesc": "Upgrade to supported engine version",
+        "criticality": "H",
         "downtime": 1,
         "slowness": 0,
         "additionalCost": 0,
@@ -86,8 +100,8 @@
     },
     "EncInTransitAndRest": {
         "category": "S",
-        "^description": "Set to 0",
-        "shortDesc": "Set to 0",
+        "^description": "toImplement",
+        "shortDesc": "toImplement",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -115,8 +129,8 @@
     },
     "RedisRBAC": {
         "category": "S",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -128,8 +142,8 @@
     },
     "EnableSlowLog": {
         "category": "PO",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -141,8 +155,8 @@
     },
     "RedisNetworkBandwidthExceed": {
         "category": "PO",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -154,8 +168,8 @@
     },
     "RedisHighAuthFailure": {
         "category": "S",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -167,8 +181,8 @@
     },
     "RedisLowCacheHitRate": {
         "category": "P",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -180,8 +194,8 @@
     },
     "RedisHighEviction": {
         "category": "P",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -193,8 +207,8 @@
     },
     "RedisHighSwapUsage": {
         "category": "P",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -206,8 +220,8 @@
     },
     "HasEventNotification": {
         "category": "O",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -219,8 +233,8 @@
     },
     "AutomaticBackups": {
         "category": "RO",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -233,7 +247,7 @@
     "MultiAZ": {
         "category": "R",
         "^description": "Using default port enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
-        "shortDesc": "Change to non-default port",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -249,7 +263,7 @@
     "RICoverage": {
         "category": "C",
         "^description": "Using default port enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
-        "shortDesc": "Change to non-default port",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -265,7 +279,7 @@
     "RIExpiredIn30Days": {
         "category": "C",
         "^description": "Using default port enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
-        "shortDesc": "Change to non-default port",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -281,7 +295,7 @@
     "RIExpiredIn7Days": {
         "category": "C",
         "^description": "Using default port enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
-        "shortDesc": "Change to non-default port",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -297,7 +311,7 @@
     "IdleNodes": {
         "category": "PC",
         "^description": "Using default port enable attackers to scan & penetrate to the service easier. Default Port for Redis is 6379, Memcached is 11211. ",
-        "shortDesc": "Change to non-default port",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -312,7 +326,7 @@
     },
     "DefaultParameterGroup": {
         "category": "O",
-        "^description": "lorem ipsum",
+        "^description": "todo",
         "shortDesc": "Customise Parameter Group",
         "criticality": "I",
         "downtime": 0,
@@ -328,8 +342,8 @@
     },
     "RedisUsingCluster": {
         "category": "PR",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -341,8 +355,8 @@
     },
     "Redis.Param.tcpKeepalive": {
         "category": "P",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -354,8 +368,8 @@
     },
     "Redis.Param.timeout": {
         "category": "P",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,
@@ -367,8 +381,8 @@
     },
     "Redis.Param.resrvdMemPerc25": {
         "category": "P",
-        "^description": "Set to 0",
-        "shortDesc": "Change to non-default port",
+        "^description": "toImplement",
+        "shortDesc": "todo",
         "criticality": "L",
         "downtime": 0,
         "slowness": 0,

@@ -1,10 +1,9 @@
 from .ElasticacheCommon import ElasticacheCommon
-from packaging.version import Version
 
 
 class ElasticacheMemcached(ElasticacheCommon):
-    def __init__(self, cluster, client):
-        super().__init__(cluster, client)
+    def __init__(self, cluster, client, driver_info):
+        super().__init__(cluster, client, driver_info)
         # self.init()
 
     def _checkDefaultPort(self):
@@ -15,7 +14,3 @@ class ElasticacheMemcached(ElasticacheCommon):
             self.results['DefaultPort'] = [-1,
                                            f"Using default Memcached port 11211"]
 
-    def _checkEngineVersion(self):
-        if Version(self.cluster.get('EngineVersion')) not in self.latest_3versions.get('memcached'):
-            self.results['EngineVersion'] = [-1,
-                                             f"Not using 3 latest versions"]
