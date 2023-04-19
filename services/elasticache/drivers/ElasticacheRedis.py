@@ -7,7 +7,6 @@ class ElasticacheRedis(ElasticacheCommon):
         # self.init()
 
     def _checkDefaultPort(self):
-        # TODO: check if multiple ports can be active in a given cluster
         ports_in_cluster = [node.get('Endpoint').get(
             'Port') for node in self.cluster.get('CacheNodes')]
         if any(port == 6379 for port in ports_in_cluster):

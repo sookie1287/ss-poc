@@ -33,7 +33,7 @@ class Elasticache(Service):
                     resp = self.elasticacheClient.describe_cache_clusters(
                         ShowCacheNodeInfo=True, Marker=resp.get('Marker'))
 
-                arr = resp.get('CacheClusters')
+                arr.extend(resp.get('CacheClusters'))
 
                 if resp.get('Marker') is None:
                     break
@@ -93,6 +93,38 @@ class Elasticache(Service):
                     for (k, v) in all_instance_offerings.items()}
         return ({k: aws_get_latest_instance_generations(v) for (k, v) in families.items()})
 
+    def getSnapshots(self):
+        replicationGroupId = set()
+        last_updated = {}
+        try:
+            while True:
+                if len(replicationGroupId) == 0:
+                    # init
+                    resp = self.elasticacheClient.describe_snapshots()
+                else:
+                    # subsequent
+                    resp = self.elasticacheClient.describe_snapshots(
+                        Marker=resp.get('Marker'))
+
+                for i in resp.get('Snapshots'):
+                    if i['ReplicationGroupId'] not in replicationGroupId:
+                        replicationGroupId.add(i['ReplicationGroupId'])
+                        last_updated[i['ReplicationGroupId']
+                                     ] = i['NodeSnapshots'][0]['SnapshotCreateTime']
+
+                    for j in i['NodeSnapshots']:
+                        if j['SnapshotCreateTime'] > last_updated[i['ReplicationGroupId']]:
+                            last_updated[i['ReplicationGroupId']
+                                         ] = j['NodeSnapshot']['SnapshotCreateTime']
+
+                if resp.get('Marker') is None:
+                    break
+        except botocore.exceptions.ClientError as e:
+            # print out error to console for now
+            print(e)
+
+        return last_updated
+
     def advise(self):
         objs = {}
         self.cluster_info = self.getECClusterInfo()
@@ -129,4 +161,5 @@ if __name__ == "__main__":
     o = Elasticache('us-east-1')
     # _pr(o.getAllInstanceOfferings())
     out = o.advise()
+    # out = o.getSnapshots()
     _pr(out)
