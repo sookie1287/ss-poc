@@ -3,10 +3,11 @@ import botocore
 from packaging.version import Version
 
 from utils.Config import Config
-from utils.Tools import _pr
+from utils.Tools import _pr, aws_get_latest_instance_generations
 from services.Service import Service
 from services.elasticache.drivers.ElasticacheMemcached import ElasticacheMemcached
 from services.elasticache.drivers.ElasticacheRedis import ElasticacheRedis
+from typing import Dict, List, Set
 
 
 class Elasticache(Service):
@@ -14,7 +15,9 @@ class Elasticache(Service):
         super().__init__(region)
         self.elasticacheClient = boto3.client(
             'elasticache')
-        self.latest_3versions = self.getTopEngineVersions(3)
+        self.driverInfo = {}
+        self.driverInfo['engine_veresions'] = self.getEngineVersions()
+        self.driverInfo['latest_instances'] = self.getLatestInstanceTypes()
 
     def getECClusterInfo(self):
         # list all Elasticahe clusters
@@ -40,7 +43,7 @@ class Elasticache(Service):
 
         return arr
 
-    def getTopEngineVersions(self, n: int) -> dict[list]:
+    def getEngineVersions(self) -> Dict[str, List]:
         lookup = {}
 
         def get_version(engine):
@@ -48,7 +51,7 @@ class Elasticache(Service):
                 Engine=engine)
             engine_versions = [engine_version.get(
                 'EngineVersion') for engine_version in ret.get('CacheEngineVersions')]
-            return sorted([Version(v) for v in engine_versions], reverse=True)[:n]
+            return sorted([Version(v) for v in engine_versions], reverse=True)
 
         try:
             for i in ['memcached', 'redis']:
@@ -59,7 +62,7 @@ class Elasticache(Service):
 
         return lookup
 
-    def getAllInstanceOfferings(self) -> dict[list]:
+    def getAllInstanceOfferings(self) -> Dict[str, Set[str]]:
         offering = {}
 
         while True:
@@ -85,12 +88,15 @@ class Elasticache(Service):
         return offering
 
     def getLatestInstanceTypes(self):
-        pass
+        all_instance_offerings = self.getAllInstanceOfferings()
+        families = {k: set([i.split(".")[1] for i in v])
+                    for (k, v) in all_instance_offerings.items()}
+        return ({k: aws_get_latest_instance_generations(v) for (k, v) in families.items()})
 
     def advise(self):
         objs = {}
         self.cluster_info = self.getECClusterInfo()
-        _pr(self.cluster_info)
+        # _pr(self.cluster_info)
 
         # loop through EC nodes
         if len(self.cluster_info) > 0:
@@ -98,9 +104,11 @@ class Elasticache(Service):
 
         for cluster in self.cluster_info:
             if cluster.get('Engine') == 'memcached':
-                obj = ElasticacheMemcached(cluster, self.elasticacheClient)
+                obj = ElasticacheMemcached(
+                    cluster, self.elasticacheClient, self.driverInfo)
             if cluster.get('Engine') == 'redis':
-                obj = ElasticacheRedis(cluster, self.elasticacheClient)
+                obj = ElasticacheRedis(
+                    cluster, self.elasticacheClient, self.driverInfo)
 
             if obj is not None:
                 obj.run()
