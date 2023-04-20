@@ -93,6 +93,11 @@ class Elasticache(Service):
                     for (k, v) in all_instance_offerings.items()}
         return ({k: aws_get_latest_instance_generations(v) for (k, v) in families.items()})
 
+    def getReplicationGroupInfo(self):
+        t = self.elasticacheClient.describe_replication_groups()
+        _pr(t)
+
+
     def getSnapshots(self):
         replicationGroupId = set()
         last_updated = {}
@@ -160,6 +165,6 @@ if __name__ == "__main__":
     Config.init()
     o = Elasticache('us-east-1')
     # _pr(o.getAllInstanceOfferings())
-    out = o.advise()
-    # out = o.getSnapshots()
-    _pr(out)
+    # out = o.advise()
+    out = o.getReplicationGroupInfo()
+    # _pr(out)
