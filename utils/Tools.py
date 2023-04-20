@@ -5,6 +5,8 @@ from pprint import pprint
 from .Config import Config
 from typing import Set, Dict, Union
 
+from typing import Set, Dict, Union
+
 
 def _pr(s):
     pprint(s)
