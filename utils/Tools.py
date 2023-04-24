@@ -2,7 +2,7 @@ import boto3
 import re
 
 from pprint import pprint
-from .Config import Config
+from utils.Config import Config
 
 def _pr(s):
     pprint(s)
@@ -34,8 +34,6 @@ def aws_parseInstanceFamily(instanceFamilyInString):
     spec = Config.get(CACHE_KEYWORD, [])
     if not spec:
         ec2c = boto3.client('ec2', region_name=CURRENT_REGION)
-        
-        print(family)
         resp = ec2c.describe_instance_types(InstanceTypes=[family])
         
         iType = resp.get('InstanceTypes')
@@ -68,6 +66,7 @@ def aws_parseInstanceFamily(instanceFamilyInString):
 if __name__ == "__main__":
     Config.init()
     l = [
+        "nocomment",
         "c5.2xlarge",
         "c6gn.4xlarge",
         "db.r6g.xlarge",

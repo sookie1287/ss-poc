@@ -40,10 +40,11 @@ class ArguParser:
         #     "required": False,
         #    "default": False
         # },
-        "test": {
-            "required": False,
-            "default": False
-        },
+        ## Conflict params
+        #"dev": {
+        #    "required": False,
+        #    "default": False
+        #},
         "mode": {
             "required": False,
             "default": "report",
@@ -57,9 +58,13 @@ class ArguParser:
             "required": False,
             "default": False
         },
-        "filters": {
+        "tags": {
             "required": False,
             "default": False
+        },
+        "frameworks": {
+            "required": False,
+            "default": ''
         }
     }
 

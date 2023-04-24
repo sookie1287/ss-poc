@@ -48,7 +48,6 @@ class Reporter:
         return self.cardSummary
     
     def _process(self, region, identifier, results):
-        # print(results)
         for key, info in results.items():
             if info[0] == -1:
                 ## Register summary info
@@ -59,15 +58,16 @@ class Reporter:
                 if region not in self.summaryRegion[key]:
                     self.summaryRegion[key][region] = []
                 
-                if region not in self.detail:
-                    self.detail[region] = {}
-                
                 self.summaryRegion[key][region].append(identifier)
                 self.summary[key].append(identifier)
+                
+                if region not in self.detail:
+                    self.detail[region] = {}
                 
                 if identifier not in self.detail[region]:
                     self.detail[region][identifier] = {}
                     
+                # print(identifier, key, info[1])
                 self.detail[region][identifier][key] = info[1]
 
     def _getConfigValue(self, check, field):
@@ -223,10 +223,17 @@ class Reporter:
                     # self.detail[region][identifier][key] = arr
                     if region not in tmp:
                         tmp[region] = {}
-                        
-                    tmp[region][identifier] = {key: arr}
+                    
+                    if identifier not in tmp[region]:
+                        tmp[region][identifier] = {}
+                        #tmp[region][identifier] = {key: arr}
+                    
+                    if key not in tmp[region][identifier]:
+                        tmp[region][identifier][key] = arr
                     
         self.detail = tmp.copy()
+        # print(self.detail)
+        
         del self.config
         
     def getDetailAttributeByKey(self, key):

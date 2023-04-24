@@ -88,7 +88,7 @@ class Iam(Service):
             identifier = "<b>root_id</b>" if user['user'] == "<root_account>" else user['user']
             objs['User::' + identifier] = obj.getInfo()
             del obj
-        
+        '''
         roles = self.getRoles()
         for role in roles:
             print('... (IAM::Role) inspecting ' + role['RoleName'])
@@ -106,7 +106,7 @@ class Iam(Service):
             
             objs['Group::' + group['GroupName']] = obj.getInfo()
             del obj
-        
+        '''
         return objs
     
     def _roleFilterByName(self, rn):
@@ -115,9 +115,12 @@ class Iam(Service):
             'DO-NOT-DELETE',
             'Isengard',
             'AWSReservedSSO_',
+            'AwsSecurityNacundaAudit',
+            'AwsSecurityAudit',
             'GatedGarden',
             'PVRE-SSMOnboarding',
-            'PVRE-Maintenance'
+            'PVRE-Maintenance',
+            'InternalAuditInternal'
         ]
         
         for kw in keywords:

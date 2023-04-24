@@ -1,3 +1,6 @@
+import json
+
+import constants as _C
 from frameworks.Framework import Framework
 
 class FTR(Framework):
@@ -6,6 +9,9 @@ class FTR(Framework):
         pass
     
 if __name__ == "__main__":
-    data = {}
+    data = json.loads(open(_C.FRAMEWORK_DIR + '/api.json').read())
+    # print(data)
     o = FTR(data)
     o.readFile()
+    # o.obj()
+    o.generateMappingInformation()

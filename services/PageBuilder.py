@@ -16,6 +16,8 @@ class PageBuilder:
         'guardduty': 'shield-alt',
         'opensearch': 'warehouse'
     }
+    
+    frameworkIcon = 'tasks'
 
     pageTemplate = {
         'header.precss': 'header.precss.template.html',
@@ -29,10 +31,12 @@ class PageBuilder:
 
     isHome = False
 
-    def __init__(self, service, reporter, services, regions):
+    def __init__(self, service, reporter):
         self.service = service
-        self.services = services
-        self.regions = regions
+        self.services = Config.get('cli_services', [])
+        self.frameworks = Config.get('cli_frameworks', [])
+        self.regions = Config.get('cli_regions', [])
+        
         self.reporter = reporter
 
         self.idPrefix = self.service + '-'
@@ -366,7 +370,7 @@ class PageBuilder:
 
         if self.cssLib:
             for lib in self.cssLib:
-                output.append("<link ref='stylesheet' href='{}'>".format(lib))
+                output.append("<link rel='stylesheet' href='{}'>".format(lib))
 
         #file_get_post_css
         headerPostCSS = open(self._getTemplateByKey('header.postcss'), 'r').read()
@@ -389,7 +393,14 @@ class PageBuilder:
 
         PROJECT_TITLE = Config.ADVISOR['TITLE']
         PROJECT_VERSION = Config.ADVISOR['VERSION']
-        x = eval("f'{preJS}'")
+        
+        x = preJS.replace('{$ADMINLTE_VERSION}', ADMINLTE_VERSION)
+        x = x.replace('{$ADMINLTE_DATERANGE}', ADMINLTE_DATERANGE)
+        x = x.replace('{$ADMINLTE_URL}', ADMINLTE_URL)
+        x = x.replace('{$ADMINLTE_TITLE}', ADMINLTE_TITLE)
+        x = x.replace('{$PROJECT_TITLE}', PROJECT_TITLE)
+        x = x.replace('{$PROJECT_VERSION}', PROJECT_VERSION)
+        
         output.append(x)
 
         if self.jsLib:
@@ -424,7 +435,10 @@ class PageBuilder:
         sidebarPRE = sidebarPRE.replace('{$ISHOME}', ISHOME)
         output.append(sidebarPRE)
 
-        arr = self.buildNavCustomItems()
+        arr = self.buildNavCustomItems('Services', self.services)
+        output.append("\n".join(arr))
+        
+        arr = self.buildNavCustomItems('Frameworks', self.frameworks)
         output.append("\n".join(arr))
 
         sidebarPOST = open(self._getTemplateByKey('sidebar.postcustom'), 'r').read()
@@ -432,22 +446,36 @@ class PageBuilder:
 
         return output
     
-    def buildNavCustomItems(self):
-        services = self.services
+    ## <TODO>
+    ## Support Framework
+    def buildNavCustomItems(self, title, lists):
+        services = lists
         activeService = self.service
 
         output = []
-        output.append("<li class='nav-header'>Services</li>")
-
+        output.append("<li class='nav-header'>{}</li>".format(title))
+        
+        if title == 'Frameworks':
+            services = {}
+            for l in lists:
+                services[l] = 0
+        else:
+            services = lists
+        
         for name, count in services.items():
             if name == activeService:
                 class_ = 'active'
             else:
                 class_ = ''
-            icon = self._navIcon(name)
+            
+            isFramework = True    
+            icon = self.frameworkIcon
+            if name in self.serviceIcon:
+                isFramework = False
+                icon = self._navIcon(name)
 
             _count = count
-            if name == 'guardduty':
+            if name == 'guardduty' or isFramework == True:
                 _count = ''
 
             output.append("<li class='nav-item'>\n"
