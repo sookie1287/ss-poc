@@ -2,7 +2,6 @@ import boto3
 import botocore
 
 from utils.Config import Config
-from utils.Tools import Tools
 from services.Service import Service
 
 from services.Evaluator import Evaluator
@@ -13,3 +12,8 @@ class Ec2CompOpt(Evaluator):
         self.compOptClient = compOptClient
         self.init()
     
+    def _checkComputeOptimizerEnabled(self):
+        result = self.compOptClient.get_enrollment_status();
+        
+        if result['status'] != 'Active':
+            self.results['ComputeOptimizerEnabled'] = [-1,result['status']]

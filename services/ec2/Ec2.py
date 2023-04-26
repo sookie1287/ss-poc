@@ -8,7 +8,8 @@ import time
 
 from utils.Config import Config
 from services.Service import Service
-from service.ec2.drivers.Ec2ComptOpt import Ec2CompOpt
+from services.ec2.drivers.Ec2Instance import Ec2Instance
+from services.ec2.drivers.Ec2CompOpt import Ec2CompOpt
 
 class Ec2(Service):
     def __init__(self, region):
@@ -16,7 +17,8 @@ class Ec2(Service):
         self.ec2Client = boto3.client('ec2')
         self.ssmClient = boto3.client('ssm')
         self.compOptClient = boto3.client('compute-optimizer')
-        
+    
+    # get EC2 Instance resources
     def getResources(self):
         filters = []
         if self.tags:
@@ -29,14 +31,15 @@ class Ec2(Service):
             
         arr = results.get('Reservations')
         while results.get('NextToken') is not None:
-            results = self.ec2Client.describeInstances(
+            results = self.ec2Client.describe_instances(
                 Filters = filters,
                 NextToken = results.get('NextToken')
             )    
             arr = arr + results.get('Reservations')
 
         return arr
-        
+    
+    # get EC2 Security Group resources
     def getEC2SecurityGroups(self,instance):
         if 'SecurityGroups' in instance:
             securityGroups = instance['SecurityGroups']
@@ -63,6 +66,18 @@ class Ec2(Service):
                     )
                 arr = arr + results.get('SecurityGroups')
             return arr
+    
+    # in the original PHP edition, related services were together. now split it to EC2, ELB, ASG
+    # EC2 Cost Explorer resources
+    # EC2 Instance resources
+    # EC2 EBS resources
+    # EC2 Instance Security Group resources
+    
+    # EC2 ELB resources
+    # EC2 ELB Classic resources
+    # EC2 ELB Security Group resources
+    
+    # EC2 Autoscaling Group resources
             
     # def getEBS(self):
     #     param = {}
@@ -88,7 +103,7 @@ class Ec2(Service):
         
     def advise(self):
         objs = {}
-        # results = o.getResources()
+        instances = self.getResources()
         
         # self._AWS_OPTIONS['region']
         try:
@@ -106,9 +121,14 @@ class Ec2(Service):
             print(e)
             print("!!! Skipping compute optimizer check for <" + self._AWS_OPTIONS['region'] + ">")
         
-        print(compOptCheck)
-        
         # print(results)
+        
+        for instance in instances:
+            instanceData = instance['Instances'][0]
+            # print(instanceData)
+            print('... (EC2) inspecting ' + instanceData['InstanceId'])
+            obj = Ec2Instance(instanceData,self.ec2Client)
+            obj.run()
         
         return objs
         
