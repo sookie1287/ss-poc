@@ -298,5 +298,18 @@
 		"ref": [
 			"[Rotate access key]<https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_RotateAccessKey>"
 		]
+	},
+	"enableCostBudget": {
+		"category": "C",
+		"^description": "AWS Budgets enable monitoring of monthly costs and usage with notifications when costs are forecasted to exceed target thresholds. Forecasted cost notifications can provide an indication of unexpected activity, providing extra defense in addition to other monitoring systems, such as AWS Trusted Advisor and Amazon GuardDuty. Monitoring and understanding your AWS costs is also part of good operational hygiene.",
+		"shortDesc": "Monitor your AWS spending",
+		"criticality": "H",
+		"downtime": 0,
+		"slowness": 0,
+		"additionalCost": 0,
+		"needFullTest": 0,
+		"ref": [
+			"[Create a budget]<https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-create.html#create-cost-budget>"
+		]
 	}
 }

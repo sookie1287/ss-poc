@@ -12,8 +12,6 @@ class IamUser(IamCommon):
         self.user = user
         self.iamClient = iamClient
         
-        print(user)
-
         self.init()
 
     def _checkHasMFA(self):
@@ -92,10 +90,14 @@ class IamUser(IamCommon):
         else:
             ## <TODO>
             ## GenerateReport api will cache results, waiting it to refresh
-            days = 90
-            if True:
+            if user['access_key_1_active'] == 'false':
+                return
+            
+            days = self.getAgeInDay(user['access_key_1_last_rotated'])
+            
+            if days >= 90:
                 k = 'hasAccessKeyNoRotate90days'
-            elif True:
+            elif days >= 30:
                 k = 'hasAccessKeyNoRotate30days'
             else:
                 return
