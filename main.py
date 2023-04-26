@@ -55,7 +55,10 @@ Config.set("_AWS_OPTIONS", _AWS_OPTIONS)
 
 regions = _cli_options['region'].split(',')
 services = _cli_options['services'].split(',')
-frameworks = _cli_options['frameworks'].split(',')
+
+frameworks = []
+if len(_cli_options['frameworks']) > 0:
+    frameworks = _cli_options['frameworks'].split(',')
 
 tempConfig = _AWS_OPTIONS.copy();
 tempConfig['region'] = regions[0]
