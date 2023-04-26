@@ -10,11 +10,13 @@ from .IamCommon import IamCommon
 class IamAccount(IamCommon):
     PASSWORD_POLICY_MIN_SCORE = 4
     
-    def __init__(self, none, iamClient, accClient, sppClient, noOfUsers):
+    def __init__(self, none, iamClient, accClient, sppClient, budgetClient, noOfUsers):
         super().__init__()
         self.iamClient = iamClient
         self.accClient = accClient
         self.sppClient = sppClient
+        self.budgetClient = budgetClient
+        
         self.noOfUsers = noOfUsers
         # self.__configPrefix = 'iam::settings::'
         
@@ -44,6 +46,17 @@ class IamAccount(IamCommon):
                 
         return score
         
+    def _checkHasCostBudget(self):
+        stsInfo = Config.get('stsInfo')
+        
+        budgetClient = self.budgetClient
+        resp = budgetClient.describe_budgets(AccountId=stsInfo['Account'])
+        
+        if 'Budgets' in resp:
+            return 
+        
+        self.results['enableCostBudget'] = [-1, ""]
+        
     def _checkPasswordPolicy(self):
         try:
             resp = self.iamClient.get_account_password_policy()
@@ -68,7 +81,7 @@ class IamAccount(IamCommon):
     def _checkSupportPlan(self):
         sppClient = self.sppClient
         try:
-            resp = sppClient.describeSeverityLevels()
+            resp = sppClient.describe_severity_levels()
         except botocore.exceptions.ClientError as e:
             ecode = e.response['Error']['Code']
             if ecode == 'SubscriptionRequiredException':
@@ -91,7 +104,6 @@ class IamAccount(IamCommon):
 
     
     def getAlternateContactByType(self, typ):
-        stsInfo = Config.get('stsInfo')
         try:
             resp = self.accClient.get_alternate_contact(
                 AlternateContactType = typ

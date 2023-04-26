@@ -20,6 +20,7 @@ class Iam(Service):
         self.iamClient = boto3.client('iam')
         self.accClient = boto3.client('account')
         self.sppClient = boto3.client('support')
+        self.budgetClient = boto3.client('budgets')
     
     def getGroups(self):
         arr = []
@@ -80,7 +81,7 @@ class Iam(Service):
         users = self.getUsers()
         
         print('... (IAM:Account) inspecting')
-        obj = IamAccount(None, self.iamClient, self.accClient, self.sppClient, len(users))
+        obj = IamAccount(None, self.iamClient, self.accClient, self.sppClient, self.budgetClient, len(users))
         obj.run()
         objs['Account::Config'] = obj.getInfo()
         
