@@ -10,12 +10,14 @@ from .IamCommon import IamCommon
 class IamAccount(IamCommon):
     PASSWORD_POLICY_MIN_SCORE = 4
     
-    def __init__(self, none, iamClient, accClient, sppClient, budgetClient, noOfUsers):
+    def __init__(self, none, awsClients, noOfUsers):
         super().__init__()
-        self.iamClient = iamClient
-        self.accClient = accClient
-        self.sppClient = sppClient
-        self.budgetClient = budgetClient
+        
+        self.iamClient = awsClients['iamClient']
+        self.accClient = awsClients['accClient']
+        self.sppClient = awsClients['sppClient']
+        self.gdClient = awsClients['gdClient']
+        self.budgetClient = awsClients['budgetClient']
         
         self.noOfUsers = noOfUsers
         # self.__configPrefix = 'iam::settings::'
@@ -45,6 +47,13 @@ class IamAccount(IamCommon):
                 score += 1
                 
         return score
+    
+    def _checkHasGuardDuty(self):
+        ## randomly check 1 region
+        # $results = $this->guarddutyClient->listDetectors();
+        # $arr = $results->get('DetectorIds');
+        resp = self.gdClient.list_detectors()
+        print(resp)
         
     def _checkHasCostBudget(self):
         stsInfo = Config.get('stsInfo')
