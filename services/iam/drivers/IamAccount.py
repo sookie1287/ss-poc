@@ -4,14 +4,18 @@ import botocore
 import datetime
 from dateutil.tz import tzlocal
 
+from utils.Config import Config
 from .IamCommon import IamCommon
  
 class IamAccount(IamCommon):
     PASSWORD_POLICY_MIN_SCORE = 4
     
-    def __init__(self, none, iamClient):
+    def __init__(self, none, iamClient, accClient, sppClient, noOfUsers):
         super().__init__()
         self.iamClient = iamClient
+        self.accClient = accClient
+        self.sppClient = sppClient
+        self.noOfUsers = noOfUsers
         # self.__configPrefix = 'iam::settings::'
         
         self.init()
@@ -60,3 +64,41 @@ class IamAccount(IamCommon):
             print(ecode)
             if ecode == 'NoSuchEntity':
                 self.results['passwordPolicy'] = [-1, ecode]
+    
+    def _checkSupportPlan(self):
+        sppClient = self.sppClient
+        try:
+            resp = sppClient.describeSeverityLevels()
+        except botocore.exceptions.ClientError as e:
+            ecode = e.response['Error']['Code']
+            if ecode == 'SubscriptionRequiredException':
+                self.results['supportPlanLowTier'] = [-1, '']
+    
+    def _checkHasUsers(self):
+        # has at least 1 for all account (root)
+        if self.noOfUsers < 2:
+            self.results['noUsersFound'] = [-1, 'No IAM User found']
+                
+    def _checkHasAlternateContact(self):
+        CONTACT_TYP = ['BILLING', 'SECURITY', 'OPERATIONS']
+        cnt = 0
+        for typ in CONTACT_TYP:
+            res = self.getAlternateContactByType(typ)
+            cnt += res
+        
+        if cnt == 0:
+            self.results['hasAlternateContact'] = [-1, 'No alternate contacts']
+
+    
+    def getAlternateContactByType(self, typ):
+        stsInfo = Config.get('stsInfo')
+        try:
+            resp = self.accClient.get_alternate_contact(
+                AlternateContactType = typ
+            )
+            return 1
+            
+        except botocore.exceptions.ClientError as e:
+            ecode = e.response['Error']['Code']
+            if ecode == 'ResourceNotFoundException':
+                return 0

@@ -18,6 +18,8 @@ class Iam(Service):
         # self._AWS_OPTIONS['version'] = Config.AWS_SDK['IAMCLIENT_VERS']
         # self.iamClient = IamClient(self.__AWS_OPTIONS)
         self.iamClient = boto3.client('iam')
+        self.accClient = boto3.client('account')
+        self.sppClient = boto3.client('support')
     
     def getGroups(self):
         arr = []
@@ -49,6 +51,8 @@ class Iam(Service):
         
     def getUsers(self):
         arr = []
+        resp = self.iamClient.generate_credential_report()
+        time.sleep(1)
         try:
             results = self.iamClient.get_credential_report()
         except botocore.exceptions.ClientError as e:
@@ -73,13 +77,13 @@ class Iam(Service):
         
     def advise(self):
         objs = {}
+        users = self.getUsers()
         
         print('... (IAM:Account) inspecting')
-        obj = IamAccount(None, self.iamClient)
+        obj = IamAccount(None, self.iamClient, self.accClient, self.sppClient, len(users))
         obj.run()
         objs['Account::Config'] = obj.getInfo()
         
-        users = self.getUsers()
         for user in users:
             print('... (IAM::User) inspecting ' + user['user'])
             obj = IamUser(user, self.iamClient)
@@ -88,7 +92,7 @@ class Iam(Service):
             identifier = "<b>root_id</b>" if user['user'] == "<root_account>" else user['user']
             objs['User::' + identifier] = obj.getInfo()
             del obj
-        
+        '''
         roles = self.getRoles()
         for role in roles:
             print('... (IAM::Role) inspecting ' + role['RoleName'])
@@ -106,7 +110,7 @@ class Iam(Service):
             
             objs['Group::' + group['GroupName']] = obj.getInfo()
             del obj
-        
+        '''
         return objs
     
     def _roleFilterByName(self, rn):
@@ -115,9 +119,12 @@ class Iam(Service):
             'DO-NOT-DELETE',
             'Isengard',
             'AWSReservedSSO_',
+            'AwsSecurityNacundaAudit',
+            'AwsSecurityAudit',
             'GatedGarden',
             'PVRE-SSMOnboarding',
-            'PVRE-Maintenance'
+            'PVRE-Maintenance',
+            'InternalAuditInternal'
         ]
         
         for kw in keywords:

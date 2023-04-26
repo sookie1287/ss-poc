@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/ec2-user/environment/ss-poc/src/services/Evaluator.py", line 26, in run
+    getattr(self, method)()
+  File "/home/ec2-user/environment/ss-poc/src/services/iam/drivers/IamAccount.py", line 71, in _checkSupportPlan
+    resp = sppClient.describeSeverityLevels()
+  File "/home/ec2-user/environment/ss-poc/lib64/python3.7/site-packages/botocore/client.py", line 877, in __getattr__
+    f"'{self.__class__.__name__}' object has no attribute '{item}'"
+AttributeError: 'Support' object has no attribute 'describeSeverityLevels'

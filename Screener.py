@@ -7,6 +7,9 @@ from utils.Config import Config
 from services.Cloudwatch import Cloudwatch
 from services.Reporter import Reporter
 from services.PageBuilder import PageBuilder
+
+from frameworks.FrameworkPageBuilder import FrameworkPageBuilder
+
 import constants as _C
 
 class Screener:
@@ -82,13 +85,13 @@ class Screener:
     
     
     @staticmethod    
-    def generateScreenerOutput(runmode, contexts, hasGlobal, serviceStat, regions, uploadToS3, bucket):
+    def generateScreenerOutput(runmode, contexts, hasGlobal, regions, uploadToS3, bucket):
         stsInfo = Config.get('stsInfo')
         if runmode == 'api-raw':
             with open(_C.API_JSON, 'w') as f:
                 json.dump(contexts, f)
         else:
-            apiResultArray = []
+            apiResultArray = {}
             if hasGlobal:
                 regions.append('GLOBAL')
             
@@ -119,13 +122,17 @@ class Screener:
                         print(pageBuilderClass + ' class not found, using default pageBuilder')
                         pageBuilderClass = 'pageBuilder'
                         
-                    pb = PageBuilder(service, reporter, serviceStat, regions)
+                    pb = PageBuilder(service, reporter)
                     pb.buildPage()
                     
                     ## <TODO>
                     # if service not in ['guardduty']:
                     #    excelObj.generateWorkSheet(service, reporter.cardSummary)
-                else:
+                
+                if runmode == 'report' or runmode == 'api-full':
+                    if not service in apiResultArray:
+                        apiResultArray[service] = {'summary': {}, 'detail': {}}
+                    
                     apiResultArray[service]['summary'] = reporter.getCard()
                     apiResultArray[service]['detail'] = reporter.getDetail()
             
@@ -138,6 +145,14 @@ class Screener:
                 ## dashPB will gather summary info, hence rearrange the sequences
                 # excelObj.buildSummaryPage(summary)
                 # excelObj.__save(HTML_DIR + '/')
+                
+                ## Enhancement - Framework
+                frameworks = Config.get('cli_frameworks')
+                if len(frameworks) > 0:
+                    for framework in frameworks:
+                        o = FrameworkPageBuilder(framework, apiResultArray)
+                        p = o.buildPage()
+                
                 os.chdir(_C.ROOT_DIR)
                 os.system('cd adminlte; zip -q -r output.zip html; mv output.zip ../output.zip')
                 print("Pages generated, download \033[1;42moutput.zip\033[0m to view")

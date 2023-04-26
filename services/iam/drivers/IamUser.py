@@ -11,7 +11,8 @@ class IamUser(IamCommon):
         super().__init__()
         self.user = user
         self.iamClient = iamClient
-        # self.__configPrefix = 'iam::user::'
+        
+        print(user)
 
         self.init()
 
@@ -80,3 +81,23 @@ class IamUser(IamCommon):
         resp = self.iamClient.list_user_policies(UserName = user)
         inlinePolicies = resp.get('PolicyNames')
         self.evaluateInlinePolicy(inlinePolicies, user, 'user')
+        
+    def _checkAccessKeyRotate(self):
+        user = self.user
+        if user['user'] == '<root_account>':
+            if user['access_key_1_active'] == 'false' and user['access_key_2_active'] == 'false':
+                pass 
+            else:
+                self.results['rootHasAccessKey'] = [-1, '']
+        else:
+            ## <TODO>
+            ## GenerateReport api will cache results, waiting it to refresh
+            days = 90
+            if True:
+                k = 'hasAccessKeyNoRotate90days'
+            elif True:
+                k = 'hasAccessKeyNoRotate30days'
+            else:
+                return
+            
+            self.results[k] = [-1, str(days)]

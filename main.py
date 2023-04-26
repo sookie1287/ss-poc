@@ -16,10 +16,11 @@ _cli_options = ArguParser.Load()
 
 debugFlag = _cli_options['debug']
 # feedbackFlag = _cli_options['feedback']
-testmode = _cli_options['test']
+# testmode = _cli_options['dev']
+testmode = False
 bucket = _cli_options['bucket']
 runmode = _cli_options['mode']
-filters = _cli_options['filters']
+filters = _cli_options['tags']
 
 DEBUG = True if debugFlag in _C.CLI_TRUE_KEYWORD_ARRAY or debugFlag is True else False
 # feedbackFlag = True if feedbackFlag in _C.CLI_TRUE_KEYWORD_ARRAY or feedbackFlag is True else False
@@ -54,6 +55,7 @@ Config.set("_AWS_OPTIONS", _AWS_OPTIONS)
 
 regions = _cli_options['region'].split(',')
 services = _cli_options['services'].split(',')
+frameworks = _cli_options['frameworks'].split(',')
 
 tempConfig = _AWS_OPTIONS.copy();
 tempConfig['region'] = regions[0]
@@ -129,7 +131,12 @@ uploadToS3 = False
 
 ## <TODO>
 ## Might be able breakdown the function further to leverage on multi-processing
-Screener.generateScreenerOutput(runmode, contexts, hasGlobal, serviceStat, regions, uploadToS3, bucket)
+
+Config.set('cli_services', serviceStat)
+Config.set('cli_regions', regions)
+Config.set('cli_frameworks', frameworks)
+
+Screener.generateScreenerOutput(runmode, contexts, hasGlobal, regions, uploadToS3, bucket)
 
 os.chdir(_C.FORK_DIR)
 os.system('rm -f tail.txt')
