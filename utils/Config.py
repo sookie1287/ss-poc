@@ -76,7 +76,6 @@ class Config:
         }
 
         Config.set('stsInfo', stsInfo)
-        
        
     @staticmethod 
     def set(key, val):

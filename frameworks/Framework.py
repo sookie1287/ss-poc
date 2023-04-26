@@ -5,6 +5,7 @@ import constants as _C
 
 class Framework():
     def __init__(self, data):
+        self.stats = []
         self.data = data
         self.framework = type(self).__name__
         pass
@@ -38,8 +39,10 @@ class Framework():
         ## Not Available, Comply, Not Comply
         summ = {}
         outp = []
+        
         for title, sections in self.map['mapping'].items():
             # outp.append(self.formatTitle(title))
+            # [Manual, Compliant, Not Comply]
             if not title in summ:
                 summ[title] = [0,0,0]
                 
@@ -66,7 +69,22 @@ class Framework():
                 
                 summ[title][pos] += 1    
         
-            return outp
+        self.stats = summ
+        return outp
+    
+    def generateGraphInformation(self):
+        outp = {}
+        _m = 0  # manual
+        _c = 0  # compliant
+        _n = 0  # not comply
+        for _sect, _counter in self.stats.items():
+            _m += _counter[0]
+            _c += _counter[1]
+            _n += _counter[2]
+            
+        outp['mcn'] = [_m, _c, _n]
+        outp['stats'] = self.stats
+        return outp
     
     ## <TODO>
     def formatTitle(self, title):
@@ -90,11 +108,17 @@ class Framework():
         checks = ["<dl>"]
         for v in packedData:
             if "r" in v:
-                c = "<dt><i class='fas fa-times'></i> [{}] - {}</dt>{}</dd>".format(v['c'], v['d'], v['r'])
+                tmp = ['<ul>']
+                for _reg, _affected in v['r'].items():
+                    tmp.append("<li><b>[" + _reg + "]</b>" + ", ".join(_affected) + "</li>")
+                
+                tmp.append("</ul>")
+                    
+                c = "<dt class='text-danger'><i class='fas fa-times'></i> [{}] - {}</dt>{}</dd>".format(v['c'], v['d'], "".join(tmp))
                 links.append(v['l'])
                 comp = -1
             else:
-                c = "<dt><i class='fas fa-check'></i> [{}]</i></dt>".format(v['c'])
+                c = "<dt class='text-success'><i class='fas fa-check'></i> [{}]</i></dt>".format(v['c'])
                 
             checks.append(c)
         checks.append("</dl>")

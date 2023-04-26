@@ -1,6 +1,6 @@
 # Service Screener
 
-This is an unofficial guidance tool for AWS environments.
+An open source guidance tool for AWS environments.
 
 ## Overview
 Service Screener is a tool that runs automated checks on AWS environments and provide recommendations based on the [AWS Well Architected Framework](https://aws.amazon.com/architecture/well-architected/). 
@@ -13,7 +13,7 @@ This tool aims to complement the [AWS Well Architected Tool](https://aws.amazon.
 Service Screener uses [AWS Cloudshell](https://aws.amazon.com/cloudshell/), a free serivce that provides a browser-based shell to run scripts using the AWS CLI. It runs multiple `describe` and `get` API calls to determine the configuration of your environment.
 
 ## How much does it cost?
-The tool will cost less than $0.01 each time it is run. 
+Running this tool is free as it is covered under the AWS Free Tier. If you have exceeded the free tier limits, each run will cost less than $0.01.
 
 ## Prerequisites
 1. Please review the [DISCLAIMER](./DISCLAIMER.md) before proceeding. 
@@ -51,11 +51,16 @@ The tool will cost less than $0.01 each time it is run.
 
 In the AWS CloudShell terminal, run this script this to install the dependencies:
 ```bash
-rm -rf service-screener
-git clone https://github.com/aws-samples/service-screener.git
-cd service-screener 
+python -m venv .
+source bin/activate
+git clone https://github.com/<GITHUB_REPO_OWNER>/ss-poc.git
+mv ss-poc src
+cd src
+pip install -e .
+pip install boto3
+pip install packaging
+alias screener="python3 $(pwd)/main.py"
 
-source install.sh
 ```
 
 ![Install dependencies](https://d39bs20xyg7k53.cloudfront.net/services-screener/p2-dependencies.gif)
@@ -87,16 +92,19 @@ screener --region ap-southeast-1,us-east-1 --services rds,iam
 
 **Example 5: Running in the Singapore regions, by filtered resources based on tags (e.g: Name=env Values=prod and Name=department Values=hr,coe)**
 ```
+## NOT SUPPORTED YET, RELEASE SOON
 screener --region ap-southeast-1 --filters env=prod%department=hr,coe
 ```
 
 **Example 6: Running in all regions, and all services**
 ```
+## NOT SUPPORTED YET, RELEASE SOON
 screener --region ALL
 ```
 
 **Example 7: Running in the Singapore & North Virginia regions, checking RDS and IAM, and uploading the result to an S3 bucket with static website hosting enabled**
 ```
+## NOT SUPPORTED YET, RELEASE SOON
 screener --region ap-southeast-1,us-east-1 --services rds,iam --bucket service-screener-<YOUR_ACCOUNT_ID>
 ```
 

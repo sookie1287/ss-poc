@@ -196,14 +196,14 @@ class PageBuilder:
         return "\n".join(output)
         
     def generateDonutPieChart(self, datasets, idPrefix='', typ='doughnut'):
-        htmlId = idPrefix + typ + str(uuid.uuid1(self.__class__))
+        htmlId = idPrefix + typ + str(uuid.uuid1())
         output = []
-        output.append("<div class='chart'><canvas id='{}' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas>\</div>".format(htmlId))
+        output.append("<div class='chart'><canvas id='{}' style='min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;'></canvas></div>".format(htmlId))
 
         labels, enriched = self._enrichDonutPieData(datasets)
 
         self.addJS("var donutPieChartCanvas = $('#{}').get(0).getContext('2d'); var donutPieData = {{labels: {},datasets: [{}]}}".format(htmlId, json.dumps(labels), json.dumps(enriched)))
-        self.addJS("var donutPieOptions= {{maintainAspectRatio : false,responsive : true}}; new Chart(donutPieChartCanvas, {{type: '{}', data: donutPieData, options: donutPieOptions}})".format(type))
+        self.addJS("var donutPieOptions= {{maintainAspectRatio : false,responsive : true}}; new Chart(donutPieChartCanvas, {{type: '{}', data: donutPieData, options: donutPieOptions}})".format(typ))
 
         return '\n'.join(output)
         

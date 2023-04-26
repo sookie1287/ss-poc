@@ -4,6 +4,8 @@ from services.PageBuilder import PageBuilder
 from frameworks.FTR.FTR import FTR
 
 class FrameworkPageBuilder(PageBuilder):
+    COMPLIANCE_STATUS = ["Not available", "Compliant", "Need Attention"]
+    
     FRAMEWORK_JS_LIB = [
         "/jquery.dataTables.min.js",
         "-bs4/js/dataTables.bootstrap4.min.js",
@@ -38,7 +40,7 @@ class FrameworkPageBuilder(PageBuilder):
             self.populate()
             self.addDataTableJS()
         else:
-            exit('[Framework] -{}- not found, script halted'.format(framework))
+            print('[Framework] -{}- not found'.format(framework))
     
     def populate(self):
         self.headerInfo = self.framework.getMetaData()
@@ -67,8 +69,56 @@ class FrameworkPageBuilder(PageBuilder):
         outp = []
         self.setFrameworkDetail(self.framework.generateMappingInformation())
         
-        outp.append("<h3>{}</h3><h4>{}</h4>".format(self.headerInfo['fullname'], self.headerInfo['description']))
-        outp.append("<a href='{}' target=_blank rel='noopener noreferrer'>Read more</a>".format(self.headerInfo['_']))
+        summ = self.framework.generateGraphInformation()
+        
+        # labels = self.COMPLIANCE_STATUS
+        ss = []
+        dnDataSets = {}
+        for k, v in enumerate(summ['mcn']):
+            ss.append("[{}:{}]".format(self.COMPLIANCE_STATUS[k], v))
+            dnDataSets[self.COMPLIANCE_STATUS[k]] = v
+            
+        _m = []
+        _c = []
+        _n = []
+        bcLabels=[]
+        bcDataSets = {}
+        for _st in self.COMPLIANCE_STATUS:
+            bcDataSets[_st] = []
+            
+        for k, v in summ['stats'].items():
+            bcLabels.append(k)
+            _m.append(v[0])
+            _c.append(v[1])
+            _n.append(v[2])
+            
+        for idx, _st in enumerate(self.COMPLIANCE_STATUS):
+            if idx == 0:
+                bcDataSets[_st] = _m
+            if idx == 1:
+                bcDataSets[_st] = _c
+            if idx == 2:
+                bcDataSets[_st] = _n
+        
+        ## Desc + Summary Doughnut
+        html = self.headerInfo['description'] + "<br>" + "<a href='{}' target=_blank rel='noopener noreferrer'>Read more</a>".format(self.headerInfo['_'])
+        card = self.generateCard('Framework', html, cardClass='warning', title=self.headerInfo['fullname'], titleBadge='', collapse=True, noPadding=False)
+        items = [[card, '']]
+        
+        pid=self.getHtmlId('SummaryDoughnut')
+        html = self.generateDonutPieChart(dnDataSets)
+        card = self.generateCard(pid, html, cardClass='warning', title='Summary: ' + " | ".join(ss), titleBadge='', collapse=True, noPadding=False)
+        items.append([card, ''])
+        outp.append(self.generateRowWithCol(size=6, items=items, rowHtmlAttr="data-context='Brief'"))
+        
+        ## Barchart, full length
+        pid=self.getHtmlId('SummaryBarChart')
+        html = self.generateBarChart(bcLabels, bcDataSets)
+        card = self.generateCard(pid, html, cardClass='warning', title='Breakdown', titleBadge='', collapse=True, noPadding=False)
+        
+        items = [[card, '']]
+        outp.append(self.generateRowWithCol(size=12, items=items, rowHtmlAttr="data-context='summaryChart'"))
+        
         return outp
     
     def buildContentDetail(self):
@@ -130,13 +180,13 @@ $("#{htmlID}").DataTable({{
         # 1 = Comply
         #-1 = Not Comply
         palette = "bg-info" 
-        s = "Not Available"
+        s = self.COMPLIANCE_STATUS[0]
         if col == 1:
             palette = "bg-success"
-            s = "Compliant"
+            s = self.COMPLIANCE_STATUS[1]
         elif col == -1:
             palette = "bg-danger"
-            s = "Need Attention"
+            s = self.COMPLIANCE_STATUS[2]
             
         return "<td class='{} color-palette'>{}</td>".format(palette, s)
         

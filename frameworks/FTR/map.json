@@ -11,20 +11,21 @@
       "HOST-001": []
     },
     "Support level": {
-      "SUP-001": []
+      "SUP-001": ["iam.supportPlanLowTier"]
     },
     "Architecture review": {
       "WAFR-001": [],
       "WAFR-002": []
     },
     "AWS root account": {
+      "ARC-001": [],
       "ARC-002": [],
       "ARC-003": ["iam.rootMfaActive"],
-      "ARC-004": [],
+      "ARC-004": ["iam.rootHasAccessKey"],
       "ARC-005": []
     },
     "Communications from AWS": {
-      "ACOM-001": [],
+      "ACOM-001": ["iam.hasAlternateContact"],
       "ACOM-002": []
     },
     "AWS CloudTrail": {
@@ -37,13 +38,15 @@
       "IAM-001": ["iam.mfaActive"],
       "IAM-002": [
         "iam.passwordLastChange90",
-        "iam.passwordLastChange365"
+        "iam.passwordLastChange365",
+        "iam.hasAccessKeyNoRotate90days",
+        "iam.hasAccessKeyNoRotate365days"
       ],
       "IAM-003": [
         "iam.passwordPolicyWeak",
         "iam.passwordPolicy"
       ],
-      "IAM-004": ["**iam.NoUsersFound"],
+      "IAM-004": ["iam.noUsersFound"],
       "IAM-005": [],
       "IAM-006": ["iam.InlinePolicyFullAccessOneServ", "iam.InlinePolicyFullAdminAccess", "iam.ManagedPolicyFullAccessOneServ", "iam.FullAdminAccess"],
       "IAM-007": [
@@ -53,9 +56,9 @@
       ],
       "IAM-008": [],
       "IAM-009": [],
-      "IAM-010": ["**iam.NoSecretsFound", "**iam.NoParamsFound"],
+      "IAM-010": [],
       "IAM-011": [],
-      "IAM-012": ["iam.mfaActive", "ec2.EC2IamProfile"],
+      "IAM-012": ["iam.mfaActive", "ec2.EC2IamProfile"]
     },
     "Operational security": {
       "SECOPS-001": []
