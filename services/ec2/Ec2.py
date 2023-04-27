@@ -104,6 +104,10 @@ class Ec2(Service):
                 obj = Ec2CompOpt(self.compOptClient)
                 obj.run()
                 
+                #set to final output
+                objs['ComputeOptimizer'] = obj.getInfo()
+                del obj
+                
         except Exception as e:
             print(e)
             print("!!! Skipping compute optimizer check for <" + self._AWS_OPTIONS['region'] + ">")
@@ -114,6 +118,10 @@ class Ec2(Service):
             print('... (EC2) inspecting ' + instanceData['InstanceId'])
             obj = Ec2Instance(instanceData,self.ec2Client)
             obj.run()
+            
+            #set to final output
+            objs['EC2::' + instanceData['InstanceId']] = obj.getInfo()
+            del obj
         
         #EC2 Security group checks
         #EC2 Cost Explorer checks
@@ -126,6 +134,10 @@ class Ec2(Service):
             print('... (EBS) inspecting ' + volume['VolumeId'])
             obj = EbsVolume(volume,self.ec2Client)
             obj.run()
+            
+            #set to final output
+            objs['EBS::' + volume['VolumeId']] = obj.getInfo()
+            del obj
         
         return objs
         

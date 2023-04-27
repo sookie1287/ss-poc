@@ -126,7 +126,7 @@ class Ec2Instance(Evaluator):
         
         for eip in eipList['Addresses']:
             if 'AssociationId' not in eip:
-                self.results['EC2EIPInUse'] = [-1, eip['PublicIp']]
+                self.results['EC2EIPNotInUse'] = [-1, eip['PublicIp']]
                 return
         
         return

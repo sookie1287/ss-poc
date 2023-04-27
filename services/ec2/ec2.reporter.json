@@ -38,7 +38,7 @@
             "[IAM roles for EC2]<https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html>"    
         ]
     },
-    "EC2EIPInUse": {
+    "EC2EIPNotInUse": {
         "category": "C",
         "^description": "Elastic IP In Use: {$COUNT} of your Elastic IP is not associated to any instance. Release unused Elastic IP to save cost.",
         "downtime": 0,
