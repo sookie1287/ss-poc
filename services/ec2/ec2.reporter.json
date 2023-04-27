@@ -155,7 +155,7 @@
             "[Amazon EBS volume types]<https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html>"    
         ]
     },
-    "EBSInUsed": {
+    "EBSInUse": {
         "category": "C",
         "^description": "Storage Utilization: {$COUNT} of EBS storage volumes are not attached to any instances. Remove unused volumes to reduce the storage cost.",
         "downtime": 0,
