@@ -11,6 +11,7 @@ from services.Service import Service
 from services.ec2.drivers.Ec2Instance import Ec2Instance
 from services.ec2.drivers.Ec2CompOpt import Ec2CompOpt
 from services.ec2.drivers.EbsVolume import EbsVolume
+from services.ec2.drivers.CostExplorerRecs import CostExplorerRecs
 
 class Ec2(Service):
     def __init__(self, region):
@@ -18,6 +19,7 @@ class Ec2(Service):
         self.ec2Client = boto3.client('ec2')
         self.ssmClient = boto3.client('ssm')
         self.compOptClient = boto3.client('compute-optimizer')
+        self.ceClient = boto3.client('ce')
     
     # get EC2 Instance resources
     def getResources(self):
@@ -68,6 +70,7 @@ class Ec2(Service):
                 arr = arr + results.get('SecurityGroups')
             return arr
     
+    # get EBS resources
     def getEBSResources(self):
         filters = []
         
@@ -100,7 +103,7 @@ class Ec2(Service):
             )
             
             if 'Parameters' in compOptCheck and len(compOptCheck['Parameters']) > 0:
-                print('... (Compute Optimizer) inspecting')
+                print('... (Compute Optimizer) inspecting recommendations')
                 obj = Ec2CompOpt(self.compOptClient)
                 obj.run()
                 
@@ -124,7 +127,19 @@ class Ec2(Service):
             del obj
         
         #EC2 Security group checks
+        
         #EC2 Cost Explorer checks
+        try:
+            print('... (Savings Recommendations) inspecting recommendations')
+            obj = CostExplorerRecs(self.ceClient)
+            obj.run()
+            
+            #set to final output
+            objs['CostExplorer'] = obj.getInfo()
+            del obj
+        except Exception as e:
+            print(e)
+            print("!!! Skipping savings recommendations for <" + self._AWS_OPTIONS['region'] + ">")
         
         #EBS checks
         volumes = self.getEBSResources()
@@ -139,6 +154,7 @@ class Ec2(Service):
             objs['EBS::' + volume['VolumeId']] = obj.getInfo()
             del obj
         
+        #final output
         return objs
         
         
